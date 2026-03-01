@@ -1,0 +1,335 @@
+<!-- MCM Outdoor Living - Paver Patio Cost Calculator (Elementor HTML Widget)
+  Inputs (approved):
+  - Length + Width (auto sqft)
+  - Material: Concrete pavers / Stone pavers
+  - Site Conditions: Standard / Moderate / Challenging
+  - Layout Complexity: Simple / Moderate / Complex
+  Add-ons:
+  - Remove existing concrete/pavers
+  - Add drainage solutions
+  - Steps (None / 1–2 / 3–5)
+  - Seating wall
+  - Walkway connection
+  Output:
+  - Estimated total cost range
+-->
+
+<div id="mcm-paver-calculator" class="mcm-calc">
+  <div class="mcm-calc__header">
+    <h3>Paver Patio Cost Calculator</h3>
+    <p class="mcm-calc__sub">
+      Use this to explore a starting cost range based on size, materials, and common project variables.
+    </p>
+  </div>
+
+  <div class="mcm-calc__grid">
+    <div class="mcm-calc__field">
+      <label for="mcmPatioLength">Patio length (ft)</label>
+      <input id="mcmPatioLength" type="number" min="5" step="1" value="20" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmPatioWidth">Patio width (ft)</label>
+      <input id="mcmPatioWidth" type="number" min="5" step="1" value="10" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated patio area</label>
+      <div class="mcm-calc__readonly" id="mcmPatioArea">--</div>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmPatioMaterial">Material</label>
+      <select id="mcmPatioMaterial">
+        <option value="concrete" selected>Concrete pavers</option>
+        <option value="stone">Stone pavers</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__grid mcm-calc__grid--2" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmSiteConditions">Site conditions</label>
+      <select id="mcmSiteConditions">
+        <option value="standard" selected>Standard (flat yard, easy access)</option>
+        <option value="moderate">Moderate (some grading or access limits)</option>
+        <option value="challenging">Challenging (slope, tight access, obstacles)</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmComplexity">Layout complexity</label>
+      <select id="mcmComplexity">
+        <option value="simple" selected>Simple (rectangular)</option>
+        <option value="moderate">Moderate (some cuts/edges)</option>
+        <option value="complex">Complex (curves/angles/details)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__section">
+    <h4>Add-ons (optional)</h4>
+
+    <div class="mcm-calc__grid mcm-calc__grid--2">
+      <div class="mcm-calc__checks">
+        <label class="mcm-check">
+          <input type="checkbox" class="mcmAddon" value="demo" />
+          <span>Remove existing concrete/pavers</span>
+        </label>
+
+        <label class="mcm-check">
+          <input type="checkbox" class="mcmAddon" value="drain" />
+          <span>Add drainage solutions</span>
+        </label>
+
+        <label class="mcm-check">
+          <input type="checkbox" class="mcmAddon" value="seatwall" />
+          <span>Seating wall</span>
+        </label>
+
+        <label class="mcm-check">
+          <input type="checkbox" class="mcmAddon" value="walkway" />
+          <span>Walkway connection</span>
+        </label>
+      </div>
+
+      <div class="mcm-calc__field">
+        <label for="mcmSteps">Steps</label>
+        <select id="mcmSteps">
+          <option value="none" selected>None</option>
+          <option value="small">1–2 steps</option>
+          <option value="medium">3–5 steps</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmPatioResult">$--</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc {
+    font-family: inherit;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 18px;
+    max-width: 950px;
+  }
+
+  .mcm-calc__header h3 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .mcm-calc__sub {
+    margin: 0 0 14px;
+    opacity: 0.85;
+  }
+
+  .mcm-calc__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .mcm-calc__grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mcm-calc__field label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    opacity: 0.9;
+  }
+
+  .mcm-calc__field input,
+  .mcm-calc__field select {
+    width: 100%;
+    padding: 10px 10px;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fff;
+    font-family: inherit;
+  }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px;
+    border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px;
+    font-size: 14px;
+    background: rgba(0,0,0,0.03);
+    font-family: inherit;
+  }
+
+  .mcm-calc__section {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .mcm-calc__section h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+  }
+
+  .mcm-calc__checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mcm-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px;
+    border: 1px solid rgba(0,0,0,0.10);
+    border-radius: 12px;
+  }
+
+  .mcm-check input {
+    margin-top: 3px;
+  }
+
+  /* UPDATED: Add-on font styling matches Pergola calculator */
+  .mcm-check span {
+    font-size: 14px;
+    line-height: 1.25;
+    font-family: inherit;
+  }
+
+  .mcm-calc__result {
+    margin-top: 16px;
+  }
+
+  .mcm-calc__resultBox {
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 14px;
+    background: rgba(0,0,0,0.02);
+  }
+
+  .mcm-calc__resultLabel {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-bottom: 6px;
+  }
+
+  .mcm-calc__resultValue {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mcm-calc__checks {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.getElementById("mcm-paver-calculator");
+    if (!root) return;
+
+    const materialRate = {
+      concrete: { min: 30, max: 36 },
+      stone:    { min: 38, max: 48 }
+    };
+
+    const siteMult = {
+      standard: 1.00,
+      moderate: 1.12,
+      challenging: 1.25
+    };
+
+    const complexityMult = {
+      simple: 1.00,
+      moderate: 1.08,
+      complex: 1.15
+    };
+
+    const addonRanges = {
+      demo:     { min: 1500, max: 3500 },
+      drain:    { min: 800,  max: 2500 },
+      seatwall: { min: 2000, max: 6000 },
+      walkway:  { min: 800,  max: 2500 }
+    };
+
+    const stepRanges = {
+      none:   { min: 0,    max: 0 },
+      small:  { min: 800,  max: 2000 },
+      medium: { min: 2000, max: 4500 }
+    };
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calc() {
+      const length = Number(document.getElementById("mcmPatioLength").value);
+      const width  = Number(document.getElementById("mcmPatioWidth").value);
+
+      const areaEl = document.getElementById("mcmPatioArea");
+      const resultEl = document.getElementById("mcmPatioResult");
+
+      if (!length || !width || length < 5 || width < 5) {
+        areaEl.textContent = "--";
+        resultEl.textContent = "$--";
+        return;
+      }
+
+      const area = length * width;
+      areaEl.textContent = area.toFixed(0) + " sq ft";
+
+      const material = document.getElementById("mcmPatioMaterial").value;
+      const site = document.getElementById("mcmSiteConditions").value;
+      const complexity = document.getElementById("mcmComplexity").value;
+      const stepsKey = document.getElementById("mcmSteps").value;
+
+      const r = materialRate[material] || materialRate.concrete;
+      const mSite = siteMult[site] || 1.0;
+      const mCx = complexityMult[complexity] || 1.0;
+
+      let minTotal = area * r.min * mSite * mCx;
+      let maxTotal = area * r.max * mSite * mCx;
+
+      const checks = Array.from(root.querySelectorAll(".mcmAddon"));
+      checks.forEach(chk => {
+        if (chk.checked) {
+          const a = addonRanges[chk.value];
+          if (a) {
+            minTotal += a.min;
+            maxTotal += a.max;
+          }
+        }
+      });
+
+      const s = stepRanges[stepsKey] || stepRanges.none;
+      minTotal += s.min;
+      maxTotal += s.max;
+
+      if (maxTotal < minTotal + 800) maxTotal = minTotal + 800;
+
+      resultEl.textContent = fmtMoney(minTotal) + " – " + fmtMoney(maxTotal);
+    }
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+    calc();
+  })();
+</script>
