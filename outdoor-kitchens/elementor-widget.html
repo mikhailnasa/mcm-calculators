@@ -1,0 +1,323 @@
+<!-- MCM Outdoor Living - Outdoor Kitchen Cost Calculator (Elementor HTML Widget)
+  Updates in this version:
+  - Countertop now has 3 options (default = Granite):
+    1) Concrete (basic outdoor finish)
+    2) Granite (most common choice) [DEFAULT]
+    3) Quartz (premium upgrade)
+  - Show counter depth as a locked read-only field: 2.4 ft
+  - Use depth = 2.4 ft in the counter area math (instead of 2.5)
+  - Layout updated to match your draft:
+    Row 1 (3 cols): Kitchen length | Counter depth (locked) | Estimated counter area
+    Row 2 (3 cols): Built-in grill | Roof/cover | Finish level
+    Row 3 (2 cols): Layout type | Countertop
+  - Removed "(required)" wording (all main fields are required anyway)
+-->
+
+<div id="mcm-kitchen-calculator" class="mcm-calc mcm-calc--kitchen">
+  <div class="mcm-calc__header">
+    <h3>Outdoor Kitchen Cost Calculator</h3>
+    <p class="mcm-calc__sub">Use this to explore a starting cost range based on kitchen size, finishes, cover options, and common add-ons.</p>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="mcm-calc__grid mcm-calc__grid--3">
+    <div class="mcm-calc__field">
+      <label for="mcmKitchenLength">Kitchen length (linear ft)</label>
+      <input id="mcmKitchenLength" type="number" min="6" step="1" value="12" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Counter depth</label>
+      <div class="mcm-calc__readonly" id="mcmCounterDepth">2.4 ft</div>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated counter area</label>
+      <div class="mcm-calc__readonly" id="mcmCounterArea">--</div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="mcm-calc__grid mcm-calc__grid--3" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmGrill">Built-in grill</label>
+      <select id="mcmGrill">
+        <option value="basic" selected>Basic built-in grill</option>
+        <option value="premium">Premium built-in grill upgrade (+$2k–$5k)</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmCover">Roof / cover</label>
+      <select id="mcmCover">
+        <option value="open" selected>Open kitchen (no cover)</option>
+        <option value="pergola">Pergola cover (open slatted)</option>
+        <option value="solid">Solid patio cover (fully roofed)</option>
+        <option value="enclosed">Enclosed outdoor kitchen structure</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmFinish">Finish level</label>
+      <select id="mcmFinish">
+        <option value="basic" selected>Basic finish</option>
+        <option value="stone">Stone finish (custom stonework)</option>
+        <option value="premium">Premium build (high-end stone + details)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="mcm-calc__grid mcm-calc__grid--2" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmLayout">Layout type</label>
+      <select id="mcmLayout">
+        <option value="straight" selected>Straight run</option>
+        <option value="lshape">L-shape</option>
+        <option value="ushape">U-shape</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmCountertop">Countertop</label>
+      <select id="mcmCountertop">
+        <option value="concrete">Concrete (basic outdoor finish)</option>
+        <option value="granite" selected>Granite (most common choice)</option>
+        <option value="quartz">Quartz (premium upgrade)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__section">
+    <h4>Add-ons (optional)</h4>
+
+    <div class="mcm-calc__checks">
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmKitchenAddon" value="fridge" />
+        <span>Outdoor fridge (+$1.5k–$3.5k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmKitchenAddon" value="sink" />
+        <span>Sink + plumbing (+$3k–$7k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmKitchenAddon" value="storage" />
+        <span>Storage drawers / access doors (+$1k–$3k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmKitchenAddon" value="burner" />
+        <span>Side burner (+$800–$2k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmKitchenAddon" value="lighting" />
+        <span>Outdoor lighting package (+$2k–$5k)</span>
+      </label>
+
+      <!-- Conditional (shown only for solid/enclosed cover) -->
+      <label class="mcm-check" id="mcmVentWrap" style="display:none;">
+        <input type="checkbox" class="mcmKitchenAddon" value="vent" />
+        <span>Vent hood / ventilation system (+$2.5k–$7k)</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmKitchenResult">$--</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc { font-family: inherit; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 18px; max-width: 950px; }
+  .mcm-calc__header h3 { margin: 0 0 6px; font-size: 22px; line-height: 1.2; }
+  .mcm-calc__sub { margin: 0 0 14px; opacity: 0.85; }
+
+  .mcm-calc__grid { display: grid; gap: 12px; }
+  .mcm-calc__grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .mcm-calc__grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+  .mcm-calc__field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.9; }
+  .mcm-calc__field input, .mcm-calc__field select {
+    width: 100%; padding: 10px 10px; border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px; font-size: 14px; background: #fff;
+    font-family: inherit;
+  }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px; border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px; font-size: 14px; background: rgba(0,0,0,0.03);
+    font-family: inherit; line-height: 1.2;
+  }
+
+  .mcm-calc__section { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .mcm-calc__section h4 { margin: 0 0 10px; font-size: 16px; }
+
+  .mcm-calc__checks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mcm-check { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid rgba(0,0,0,0.10); border-radius: 12px; }
+  .mcm-check input { margin-top: 3px; }
+  .mcm-check span { font-size: 14px; line-height: 1.25; font-family: inherit; }
+
+  .mcm-calc__result { margin-top: 16px; }
+  .mcm-calc__resultBox { border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 14px; background: rgba(0,0,0,0.02); }
+  .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+  .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid--3 { grid-template-columns: repeat(2, 1fr); }
+    .mcm-calc__grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .mcm-calc__checks { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.getElementById("mcm-kitchen-calculator");
+    if (!root) return;
+
+    // Provided: Frame = $250–$475 per linear foot
+    const frameRate = { min: 250, max: 475 };
+
+    // Toned down layout multipliers
+    const layoutMult = {
+      straight: 1.00,
+      lshape: 1.06,
+      ushape: 1.12
+    };
+
+    const finishMult = { basic: 1.00, stone: 1.20, premium: 1.40 };
+
+    const coverRanges = {
+      open:     { min: 0,     max: 0 },
+      pergola:  { min: 4500,  max: 12000 },
+      solid:    { min: 9000,  max: 22000 },
+      enclosed: { min: 18000, max: 45000 }
+    };
+
+    // Countertop material ranges ($/sqft) used as adders on top of frame floor.
+    // Quartz uses your site range. Concrete/Granite are modest so it feels realistic without over-shooting.
+    const countertopRanges = {
+      concrete: { minPerSqft: 30, maxPerSqft: 45 },
+      granite:  { minPerSqft: 45, maxPerSqft: 60 },  // default
+      quartz:   { minPerSqft: 65, maxPerSqft: 75 }
+    };
+
+    // Grill is required; basic included, premium adds
+    const grillRanges = {
+      basic:   { min: 0,    max: 0 },
+      premium: { min: 2000, max: 5000 }
+    };
+
+    const addonRanges = {
+      fridge:   { min: 1500, max: 3500 },
+      sink:     { min: 3000, max: 7000 },
+      storage:  { min: 1000, max: 3000 },
+      burner:   { min: 800,  max: 2000 },
+      lighting: { min: 2000, max: 5000 },
+      vent:     { min: 2500, max: 7000 }
+    };
+
+    // Baseline from site copy: projects start ~ $13k–$15k
+    // Applied to FRAME only (so cover/countertop/grill/add-ons always move the final).
+    const DISPLAY_FLOOR_MIN = 13000;
+    const DISPLAY_FLOOR_MAX = 15000;
+
+    // LOCKED depth (per your request)
+    const COUNTER_DEPTH_FT = 2.4;
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function toggleVentVisibility(coverKey) {
+      const wrap = document.getElementById("mcmVentWrap");
+      if (!wrap) return;
+
+      const show = (coverKey === "solid" || coverKey === "enclosed");
+      wrap.style.display = show ? "flex" : "none";
+
+      if (!show) {
+        const chk = wrap.querySelector('input[type="checkbox"]');
+        if (chk) chk.checked = false;
+      }
+    }
+
+    function calc() {
+      const lengthFt = Number(document.getElementById("mcmKitchenLength").value);
+      const counterEl = document.getElementById("mcmCounterArea");
+      const resultEl = document.getElementById("mcmKitchenResult");
+
+      if (!lengthFt || lengthFt < 6) {
+        counterEl.textContent = "--";
+        resultEl.textContent = "$--";
+        return;
+      }
+
+      const layoutKey = document.getElementById("mcmLayout").value;
+      const finishKey = document.getElementById("mcmFinish").value;
+      const coverKey  = document.getElementById("mcmCover").value;
+      const topKey    = document.getElementById("mcmCountertop").value;
+      const grillKey  = document.getElementById("mcmGrill").value;
+
+      toggleVentVisibility(coverKey);
+
+      const mLayout = layoutMult[layoutKey] || 1.0;
+      const mFinish = finishMult[finishKey] || 1.0;
+
+      const cover = coverRanges[coverKey] || coverRanges.open;
+      const top = countertopRanges[topKey] || countertopRanges.granite;
+      const grill = grillRanges[grillKey] || grillRanges.basic;
+
+      // Counter area calc (slightly larger for L/U)
+      const counterBoost = (layoutKey === "lshape") ? 1.12 : (layoutKey === "ushape") ? 1.22 : 1.00;
+      const counterAreaSqft = lengthFt * COUNTER_DEPTH_FT * counterBoost;
+      counterEl.textContent = counterAreaSqft.toFixed(0) + " sq ft";
+
+      // 1) FRAME ONLY (floor applies here)
+      let frameMin = lengthFt * frameRate.min * mLayout * mFinish;
+      let frameMax = lengthFt * frameRate.max * mLayout * mFinish;
+
+      const scaledFloorMin = DISPLAY_FLOOR_MIN * mLayout * mFinish;
+      const scaledFloorMax = DISPLAY_FLOOR_MAX * mLayout * mFinish;
+
+      let minTotal = Math.max(frameMin, scaledFloorMin);
+      let maxTotal = Math.max(frameMax, scaledFloorMax);
+
+      // 2) Cover
+      minTotal += cover.min;
+      maxTotal += cover.max;
+
+      // 3) Countertop
+      minTotal += counterAreaSqft * top.minPerSqft;
+      maxTotal += counterAreaSqft * top.maxPerSqft;
+
+      // 4) Grill
+      minTotal += grill.min;
+      maxTotal += grill.max;
+
+      // 5) Add-ons
+      const checks = Array.from(root.querySelectorAll(".mcmKitchenAddon"));
+      checks.forEach(chk => {
+        if (chk.checked) {
+          const a = addonRanges[chk.value];
+          if (a) { minTotal += a.min; maxTotal += a.max; }
+        }
+      });
+
+      // Ensure it always looks like a range
+      if (maxTotal < minTotal + 1500) maxTotal = minTotal + 1500;
+
+      resultEl.textContent = fmtMoney(minTotal) + " – " + fmtMoney(maxTotal);
+    }
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+    calc();
+  })();
+</script>
