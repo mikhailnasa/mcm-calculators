@@ -1,0 +1,254 @@
+<!-- MCM Outdoor Living - Pergola Cost Calculator (Elementor HTML Widget)
+  Version: Calibrated to MCM website pricing
+
+  Updates in this version:
+  - Rates calibrated to match MCM example:
+      24x11 = 264 sq ft ≈ $22,000  -> ~ $83/sq ft all-in baseline for cedar
+  - Input order: Material -> Style -> Roof/Cover
+  - No site conditions
+  - No motorized pergola
+  - No structure size input (kept clean)
+-->
+
+<div id="mcm-pergola-calculator" class="mcm-calc">
+  <div class="mcm-calc__header">
+    <h3>Pergola Cost Calculator</h3>
+  </div>
+
+  <!-- Row 1: Length | Width | Area -->
+  <div class="mcm-calc__grid mcm-calc__grid--3">
+    <div class="mcm-calc__field">
+      <label for="mcmPergolaLength">Pergola length (ft)</label>
+      <input id="mcmPergolaLength" type="number" min="6" step="1" value="12" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmPergolaWidth">Pergola width (ft)</label>
+      <input id="mcmPergolaWidth" type="number" min="6" step="1" value="12" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated coverage area</label>
+      <div class="mcm-calc__readonly" id="mcmPergolaArea">--</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Material | Style | Roof/Cover (in this exact order) -->
+  <div class="mcm-calc__grid mcm-calc__grid--3" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmPergolaMaterial">Pergola material</label>
+      <select id="mcmPergolaMaterial">
+        <option value="pt">Pressure-treated wood</option>
+        <option value="cedar" selected>Cedar</option>
+        <option value="aluminum">Aluminum</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmPergolaStyle">Pergola style</label>
+      <select id="mcmPergolaStyle">
+        <option value="attached" selected>Attached to home</option>
+        <option value="freestanding">Freestanding</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmPergolaRoof">Roof / cover type</label>
+      <select id="mcmPergolaRoof">
+        <option value="open" selected>Open-top pergola (slatted shade)</option>
+        <option value="partial">Partial cover (shade panels / polycarbonate)</option>
+        <option value="solid">Solid patio cover roof (fully covered)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__section">
+    <h4>Add-ons (optional)</h4>
+
+    <div class="mcm-calc__checks">
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmPergolaAddon" value="lighting" />
+        <span>Integrated lighting (+$1.5k–$4k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmPergolaAddon" value="fan" />
+        <span>Ceiling fan support / electrical rough-in (+$1k–$2.5k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmPergolaAddon" value="privacy" />
+        <span>Privacy wall / screen (+$3k–$8k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmPergolaAddon" value="finish" />
+        <span>Stained or painted finish (+$1k–$3k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmPergolaAddon" value="heater" />
+        <span>Heater integration (+$2k–$6k)</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmPergolaResult">$--</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc { font-family: inherit; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 18px; max-width: 950px; }
+  .mcm-calc__header h3 { margin: 0 0 10px; font-size: 22px; line-height: 1.2; }
+
+  .mcm-calc__grid { display: grid; gap: 12px; }
+  .mcm-calc__grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+  .mcm-calc__field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.9; }
+
+  /* Unified typography */
+  .mcm-calc__field input,
+  .mcm-calc__field select,
+  .mcm-calc__readonly,
+  .mcm-check span {
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .mcm-calc__field input, .mcm-calc__field select {
+    width: 100%;
+    padding: 10px 10px;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px;
+    background: #fff;
+    line-height: 1.2;
+  }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px;
+    border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.03);
+    line-height: 1.2;
+  }
+
+  .mcm-calc__section { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .mcm-calc__section h4 { margin: 0 0 10px; font-size: 16px; }
+
+  .mcm-calc__checks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mcm-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px;
+    border: 1px solid rgba(0,0,0,0.10);
+    border-radius: 12px;
+  }
+  .mcm-check input { margin-top: 3px; }
+  .mcm-check span { line-height: 1.2; }
+
+  .mcm-calc__result { margin-top: 16px; }
+  .mcm-calc__resultBox { border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 14px; background: rgba(0,0,0,0.02); }
+  .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+  .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid--3 { grid-template-columns: repeat(2, 1fr); }
+    .mcm-calc__checks { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.getElementById("mcm-pergola-calculator");
+    if (!root) return;
+
+    /*
+      Calibrated to MCM's website statement + example:
+      - Cedar timber ~ $70/sq ft mentioned, but their example (24x11 ≈ $22k) implies ~ $83/sq ft all-in.
+      We anchor cedar to that "ballpark" reality, and scale PT/aluminum around it.
+    */
+    const materialRate = {
+      pt:       { min: 62, max: 78 },   // below cedar
+      cedar:    { min: 75, max: 95 },   // anchored to their example ballpark
+      aluminum: { min: 90, max: 120 }   // premium material
+    };
+
+    // Roof / cover multipliers (no motorized option)
+    const roofMult = {
+      open: 1.00,
+      partial: 1.18,
+      solid: 1.55
+    };
+
+    // Attached vs freestanding: modest impact
+    const styleMult = {
+      attached: 1.00,
+      freestanding: 1.10
+    };
+
+    // Add-on ranges
+    const addonRanges = {
+      lighting: { min: 1500, max: 4000 },
+      fan:      { min: 1000, max: 2500 },
+      privacy:  { min: 3000, max: 8000 },
+      finish:   { min: 1000, max: 3000 },
+      heater:   { min: 2000, max: 6000 }
+    };
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calc() {
+      const length = Number(document.getElementById("mcmPergolaLength").value);
+      const width  = Number(document.getElementById("mcmPergolaWidth").value);
+
+      const areaEl = document.getElementById("mcmPergolaArea");
+      const resultEl = document.getElementById("mcmPergolaResult");
+
+      if (!length || !width || length < 6 || width < 6) {
+        areaEl.textContent = "--";
+        resultEl.textContent = "$--";
+        return;
+      }
+
+      const area = length * width;
+      areaEl.textContent = area.toFixed(0) + " sq ft";
+
+      const material = document.getElementById("mcmPergolaMaterial").value;
+      const style = document.getElementById("mcmPergolaStyle").value;
+      const roof = document.getElementById("mcmPergolaRoof").value;
+
+      const r = materialRate[material] || materialRate.cedar;
+      const mStyle = styleMult[style] || 1.0;
+      const mRoof = roofMult[roof] || 1.0;
+
+      let minTotal = area * r.min * mStyle * mRoof;
+      let maxTotal = area * r.max * mStyle * mRoof;
+
+      // Add-ons
+      const checks = Array.from(root.querySelectorAll(".mcmPergolaAddon"));
+      checks.forEach(chk => {
+        if (chk.checked) {
+          const a = addonRanges[chk.value];
+          if (a) { minTotal += a.min; maxTotal += a.max; }
+        }
+      });
+
+      // Keep a sensible spread
+      if (maxTotal < minTotal + 1200) maxTotal = minTotal + 1200;
+
+      resultEl.textContent = fmtMoney(minTotal) + " – " + fmtMoney(maxTotal);
+    }
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+    calc();
+  })();
+</script>
