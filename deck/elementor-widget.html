@@ -1,0 +1,324 @@
+<!-- MCM Outdoor Living - Decking Cost Calculator (Elementor HTML Widget)
+  Version goals:
+  - Uses ONLY the installed $/sq ft ranges you provided for decking materials
+  - Elevation multiplier model included (logical placeholder, adjustable later)
+  - Railing uses MANUAL linear feet input (default 0) + railing material rates (placeholder, adjustable later)
+  - Railing material + length are DISABLED when elevation = Ground-level
+  - Stairs are an add-on dropdown (placeholder ranges, adjustable later)
+  Notes:
+  - Railing + stairs + elevation numbers are placeholders for now (you asked for a working visual model).
+  - Decking material pricing is from your website paste (installed).
+-->
+
+<div id="mcm-deck-calculator" class="mcm-calc">
+  <div class="mcm-calc__header">
+    <h3>Decking Cost Calculator</h3>
+    <p class="mcm-calc__sub">
+      Explore a starting cost range based on size, decking material, elevation, railings, and stairs.
+    </p>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="mcm-calc__grid">
+    <div class="mcm-calc__field">
+      <label for="mcmDeckLength">Deck length (ft)</label>
+      <input id="mcmDeckLength" type="number" min="5" step="1" value="20" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmDeckWidth">Deck width (ft)</label>
+      <input id="mcmDeckWidth" type="number" min="5" step="1" value="12" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated deck area</label>
+      <div class="mcm-calc__readonly" id="mcmDeckArea">--</div>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmElevation">Elevation</label>
+      <select id="mcmElevation">
+        <option value="ground" selected>Ground-level (0–2 ft)</option>
+        <option value="raised">Raised (3–6 ft)</option>
+        <option value="elevated">Elevated (6+ ft)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="mcm-calc__grid mcm-calc__grid--2" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmDeckMaterial">Decking material (installed)</label>
+      <select id="mcmDeckMaterial">
+        <option value="pt" selected>Pressure-treated pine ($21–$24 / sq ft)</option>
+        <option value="bamboo">Bamboo ($27–$30 / sq ft)</option>
+        <option value="cedar">Cedar ($34–$39 / sq ft)</option>
+        <option value="composite">Composite ($40–$42 / sq ft)</option>
+        <option value="redwood">Redwood ($45–$49 / sq ft)</option>
+        <option value="garapa">Garapa ($45–$49 / sq ft)</option>
+        <option value="cumaru">Cumaru ($46–$50 / sq ft)</option>
+        <option value="massaranduba">Massaranduba ($49–$52 / sq ft)</option>
+        <option value="tigerwood">Tigerwood ($53–$57 / sq ft)</option>
+        <option value="ipe">Ipe ($64–$68 / sq ft)</option>
+        <option value="teak">Teak ($67–$70 / sq ft)</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmComplexity">Design complexity</label>
+      <select id="mcmComplexity">
+        <option value="simple" selected>Simple (rectangular / standard layout)</option>
+        <option value="moderate">Moderate (more cuts / picture frame / details)</option>
+        <option value="custom">Custom (multi-level / complex framing)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Railings -->
+  <div class="mcm-calc__section">
+    <h4>Railings</h4>
+
+    <div class="mcm-calc__grid mcm-calc__grid--3">
+      <div class="mcm-calc__field">
+        <label for="mcmRailingType">Railing type</label>
+        <select id="mcmRailingType">
+          <option value="none" selected>No railing</option>
+          <option value="wood">Wood railing</option>
+          <option value="aluminum">Aluminum railing</option>
+          <option value="composite">Composite railing</option>
+        </select>
+      </div>
+
+      <div class="mcm-calc__field">
+        <label for="mcmRailingLF">Railing length (linear ft)</label>
+        <input id="mcmRailingLF" type="number" min="0" step="1" value="0" />
+      </div>
+
+      <div class="mcm-calc__field">
+        <label>Railing status</label>
+        <div class="mcm-calc__readonly" id="mcmRailingStatus">Disabled (ground-level)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stairs -->
+  <div class="mcm-calc__section">
+    <h4>Stairs</h4>
+
+    <div class="mcm-calc__grid mcm-calc__grid--2">
+      <div class="mcm-calc__field">
+        <label for="mcmStairs">Stairs</label>
+        <select id="mcmStairs">
+          <option value="none" selected>None</option>
+          <option value="s3_5">3–5 steps</option>
+          <option value="s6_10">6–10 steps</option>
+          <option value="s11_15">11–15 steps</option>
+        </select>
+      </div>
+
+      <div class="mcm-calc__field">
+        <label>Estimated range notes</label>
+        <div class="mcm-calc__readonly" id="mcmDeckNotes">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmDeckResult">$--</div>
+      <div class="mcm-calc__resultSub" id="mcmDeckSub"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc { font-family: inherit; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 18px; max-width: 950px; }
+  .mcm-calc__header h3 { margin: 0 0 6px; font-size: 22px; line-height: 1.2; }
+  .mcm-calc__sub { margin: 0 0 14px; opacity: 0.85; }
+
+  .mcm-calc__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mcm-calc__grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .mcm-calc__grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+  .mcm-calc__field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.9; }
+  .mcm-calc__field input, .mcm-calc__field select {
+    width: 100%; padding: 10px 10px; border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px; font-size: 14px; background: #fff;
+  }
+  .mcm-calc__field input:disabled, .mcm-calc__field select:disabled { opacity: 0.55; background: rgba(0,0,0,0.03); cursor: not-allowed; }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px; border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px; font-size: 14px; background: rgba(0,0,0,0.03);
+  }
+
+  .mcm-calc__section { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .mcm-calc__section h4 { margin: 0 0 10px; font-size: 16px; }
+
+  .mcm-calc__result { margin-top: 16px; }
+  .mcm-calc__resultBox { border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 14px; background: rgba(0,0,0,0.02); }
+  .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+  .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
+  .mcm-calc__resultSub { margin-top: 6px; font-size: 13px; opacity: 0.85; }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid { grid-template-columns: repeat(2, 1fr); }
+    .mcm-calc__grid--3 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.getElementById("mcm-deck-calculator");
+    if (!root) return;
+
+    // Installed $/sq ft ranges (FROM YOUR WEBSITE PASTE)
+    const materialRate = {
+      pt:           { min: 21, max: 24 },
+      bamboo:       { min: 27, max: 30 },
+      cedar:        { min: 34, max: 39 },
+      composite:    { min: 40, max: 42 },
+      redwood:      { min: 45, max: 49 },
+      garapa:       { min: 45, max: 49 },
+      cumaru:       { min: 46, max: 50 },
+      massaranduba: { min: 49, max: 52 },
+      tigerwood:    { min: 53, max: 57 },
+      ipe:          { min: 64, max: 68 },
+      teak:         { min: 67, max: 70 }
+    };
+
+    // Placeholder logic (ADJUST LATER)
+    const elevationMult = {
+      ground: 1.00,
+      raised: 1.08,
+      elevated: 1.18
+    };
+
+    // Placeholder logic (ADJUST LATER)
+    const complexityMult = {
+      simple: 1.00,
+      moderate: 1.05,
+      custom: 1.12
+    };
+
+    // Placeholder railing $/linear ft (ADJUST LATER)
+    const railingRate = {
+      none:      { min: 0,  max: 0 },
+      wood:      { min: 35, max: 60 },
+      aluminum:  { min: 55, max: 90 },
+      composite: { min: 70, max: 110 }
+    };
+
+    // Placeholder stairs add-ons (ADJUST LATER)
+    const stairAdd = {
+      none:   { min: 0,    max: 0 },
+      s3_5:   { min: 1200, max: 2500 },
+      s6_10:  { min: 2500, max: 5000 },
+      s11_15: { min: 5000, max: 8500 }
+    };
+
+    const DISPLAY_FLOOR = 20000; // FROM YOUR COPY: as low as $20k
+    const DISPLAY_CAP = 150000;  // FROM YOUR COPY: as high as $150k
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function setRailingEnabled(isEnabled) {
+      const typeEl = document.getElementById("mcmRailingType");
+      const lfEl = document.getElementById("mcmRailingLF");
+      const statusEl = document.getElementById("mcmRailingStatus");
+
+      typeEl.disabled = !isEnabled;
+      lfEl.disabled = !isEnabled;
+
+      if (!isEnabled) {
+        typeEl.value = "none";
+        lfEl.value = "0";
+        statusEl.textContent = "Disabled (ground-level)";
+      } else {
+        statusEl.textContent = "Enabled";
+      }
+    }
+
+    function calc() {
+      const length = Number(document.getElementById("mcmDeckLength").value);
+      const width  = Number(document.getElementById("mcmDeckWidth").value);
+
+      const areaEl = document.getElementById("mcmDeckArea");
+      const resultEl = document.getElementById("mcmDeckResult");
+      const subEl = document.getElementById("mcmDeckSub");
+      const noteEl = document.getElementById("mcmDeckNotes");
+
+      if (!length || !width || length < 5 || width < 5) {
+        areaEl.textContent = "--";
+        resultEl.textContent = "$--";
+        subEl.textContent = "";
+        noteEl.textContent = "—";
+        return;
+      }
+
+      const area = length * width;
+      areaEl.textContent = area.toFixed(0) + " sq ft";
+
+      const elevation = document.getElementById("mcmElevation").value;
+      const materialKey = document.getElementById("mcmDeckMaterial").value;
+      const complexity = document.getElementById("mcmComplexity").value;
+
+      // Enable/disable railing based on elevation
+      const railEnabled = (elevation !== "ground");
+      setRailingEnabled(railEnabled);
+
+      const r = materialRate[materialKey] || materialRate.pt;
+      const mElev = elevationMult[elevation] || 1.0;
+      const mCx = complexityMult[complexity] || 1.0;
+
+      let minTotal = area * r.min * mElev * mCx;
+      let maxTotal = area * r.max * mElev * mCx;
+
+      // Railings (manual LF)
+      if (railEnabled) {
+        const railType = document.getElementById("mcmRailingType").value;
+        const railLF = Math.max(0, Number(document.getElementById("mcmRailingLF").value) || 0);
+        const rr = railingRate[railType] || railingRate.none;
+
+        minTotal += railLF * rr.min;
+        maxTotal += railLF * rr.max;
+      }
+
+      // Stairs add-on
+      const stairsKey = document.getElementById("mcmStairs").value;
+      const st = stairAdd[stairsKey] || stairAdd.none;
+      minTotal += st.min;
+      maxTotal += st.max;
+
+      // Ensure a sensible range spread
+      if (maxTotal < minTotal + 1000) maxTotal = minTotal + 1000;
+
+      // Display clamp using your stated real-world bounds
+      let displayMin = Math.max(minTotal, DISPLAY_FLOOR);
+      let displayMax = Math.max(maxTotal, displayMin + 1500);
+
+      if (displayMax >= DISPLAY_CAP) {
+        resultEl.textContent = fmtMoney(displayMin) + " – " + fmtMoney(DISPLAY_CAP) + "+";
+      } else {
+        resultEl.textContent = fmtMoney(displayMin) + " – " + fmtMoney(displayMax);
+      }
+
+      // Notes (simple, not preachy)
+      const railMsg = railEnabled ? "Railings enabled (enter linear feet)." : "Railings disabled for ground-level.";
+      const stairsMsg = (stairsKey === "none") ? "No stairs selected." : "Stairs selected.";
+      noteEl.textContent = railMsg + " " + stairsMsg;
+
+      subEl.textContent = "Ranges change with material, elevation, railings, stairs, and design complexity.";
+    }
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+
+    // Initial compute
+    calc();
+  })();
+</script>
