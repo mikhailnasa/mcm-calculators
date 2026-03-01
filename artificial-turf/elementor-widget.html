@@ -1,0 +1,145 @@
+<!-- MCM Outdoor Living - Artificial Turf Cost Calculator (Elementor HTML Widget)
+  Layout (as requested):
+  Row 1 (3 cols): Length | Width | Estimated turf area
+  Row 2 (1 col): Prep complexity (full width)
+  Output: Estimated total cost range
+-->
+
+<div id="mcm-turf-calculator" class="mcm-calc">
+  <div class="mcm-calc__header">
+    <h3>Artificial Turf Cost Calculator</h3>
+    <p class="mcm-calc__sub">
+      Get a starting estimate based on square footage and typical turf installation pricing in North Texas.
+    </p>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="mcm-calc__grid mcm-calc__grid--3">
+    <div class="mcm-calc__field">
+      <label for="mcmTurfLength">Turf length (ft)</label>
+      <input id="mcmTurfLength" type="number" min="5" step="1" value="20" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmTurfWidth">Turf width (ft)</label>
+      <input id="mcmTurfWidth" type="number" min="5" step="1" value="15" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated turf area</label>
+      <div class="mcm-calc__readonly" id="mcmTurfArea">--</div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="mcm-calc__grid mcm-calc__grid--1" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmPrep">Prep complexity</label>
+      <select id="mcmPrep">
+        <option value="standard" selected>Standard (flat yard, easy access)</option>
+        <option value="moderate">Moderate (some shaping, borders, minor grading)</option>
+        <option value="complex">Complex (slope, tight access, drainage work)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmTurfResult">$--</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc { font-family: inherit; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 18px; max-width: 950px; }
+  .mcm-calc__header h3 { margin: 0 0 6px; font-size: 22px; line-height: 1.2; }
+  .mcm-calc__sub { margin: 0 0 14px; opacity: 0.85; }
+
+  .mcm-calc__grid { display: grid; gap: 12px; }
+  .mcm-calc__grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .mcm-calc__grid--1 { grid-template-columns: 1fr; }
+
+  .mcm-calc__field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.9; }
+  .mcm-calc__field input, .mcm-calc__field select {
+    width: 100%;
+    padding: 10px 10px;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fff;
+  }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px;
+    border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px;
+    font-size: 14px;
+    background: rgba(0,0,0,0.03);
+  }
+
+  .mcm-calc__result { margin-top: 16px; }
+  .mcm-calc__resultBox { border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 14px; background: rgba(0,0,0,0.02); }
+  .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+  .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid--3 { grid-template-columns: repeat(2, 1fr); }
+    /* Make area full-width on mobile so it doesn't feel cramped */
+    .mcm-calc__grid--3 .mcm-calc__field:nth-child(3) { grid-column: 1 / -1; }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.getElementById("mcm-turf-calculator");
+    if (!root) return;
+
+    // MCM page guidance: $8–$15 per sq ft
+    const baseRate = { min: 8, max: 15 };
+
+    // Prep complexity multiplier (visible but not insane)
+    const prepMult = {
+      standard: 1.00,
+      moderate: 1.10,
+      complex:  1.22
+    };
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calc() {
+      const length = Number(document.getElementById("mcmTurfLength").value);
+      const width  = Number(document.getElementById("mcmTurfWidth").value);
+      const prep   = document.getElementById("mcmPrep").value;
+
+      const areaEl = document.getElementById("mcmTurfArea");
+      const resultEl = document.getElementById("mcmTurfResult");
+
+      if (!length || !width || length < 5 || width < 5) {
+        areaEl.textContent = "--";
+        resultEl.textContent = "$--";
+        return;
+      }
+
+      const area = length * width;
+      areaEl.textContent = area.toFixed(0) + " sq ft";
+
+      const m = prepMult[prep] || 1.0;
+
+      let minTotal = area * baseRate.min * m;
+      let maxTotal = area * baseRate.max * m;
+
+      // Keep a sensible minimum spread
+      if (maxTotal < minTotal + 250) maxTotal = minTotal + 250;
+
+      resultEl.textContent = fmtMoney(minTotal) + " – " + fmtMoney(maxTotal);
+    }
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+    calc();
+  })();
+</script>
