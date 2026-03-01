@@ -1,0 +1,276 @@
+<!-- MCM Outdoor Living - Swimming Pool Cost Calculator (Elementor HTML Widget)
+  Layout update to match paver patio calculator:
+  Row 1 (4 cols): Length | Width | Estimated pool area | Pool depth
+  Row 2 (2 cols): Pool material | Pool surround type
+  Update in this version:
+  - Add-on checkbox text styling now matches Pergola calculator (font-size, line-height, font-family)
+  Everything else unchanged.
+-->
+
+<div id="mcm-pool-calculator" class="mcm-calc">
+  <div class="mcm-calc__header">
+    <h3>Swimming Pool Cost Calculator</h3>
+    <p class="mcm-calc__sub">Use this to explore a starting cost range based on size, materials, and common project variables.</p>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="mcm-calc__grid">
+    <div class="mcm-calc__field">
+      <label for="mcmLength">Pool length (ft)</label>
+      <input id="mcmLength" type="number" min="10" step="1" value="20" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmWidth">Pool width (ft)</label>
+      <input id="mcmWidth" type="number" min="8" step="1" value="10" />
+    </div>
+
+    <div class="mcm-calc__field">
+      <label>Estimated pool area</label>
+      <div class="mcm-calc__readonly" id="mcmArea">--</div>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmDepth">Pool depth</label>
+      <select id="mcmDepth">
+        <option value="standard" selected>Standard (3.5–5 ft)</option>
+        <option value="deep">Deep end (up to ~8 ft)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="mcm-calc__grid mcm-calc__grid--2" style="margin-top:12px;">
+    <div class="mcm-calc__field">
+      <label for="mcmMaterial">Pool material</label>
+      <select id="mcmMaterial">
+        <option value="vinyl">Vinyl</option>
+        <option value="fiberglass">Fiberglass</option>
+        <option value="concrete" selected>Concrete (Gunite)</option>
+      </select>
+    </div>
+
+    <div class="mcm-calc__field">
+      <label for="mcmSurround">Pool surround type</label>
+      <select id="mcmSurround">
+        <option value="basic" selected>Basic concrete pool surround (+$10k–$15k)</option>
+        <option value="pavers">Paver pool surround (+$20k–$35k)</option>
+        <option value="premium">Premium hardscape pool surround (+$35k–$50k)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mcm-calc__section">
+    <h4>Add-ons (optional)</h4>
+    <div class="mcm-calc__checks">
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmAddon" value="spa" />
+        <span>Raised spa / infinity spa (+$15k–$25k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmAddon" value="ledge" />
+        <span>Tanning ledge (+$8k–$15k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmAddon" value="water" />
+        <span>Water features (+$10k–$20k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmAddon" value="tile" />
+        <span>Custom tile / mosaic (+$5k–$12k)</span>
+      </label>
+
+      <label class="mcm-check">
+        <input type="checkbox" class="mcmAddon" value="automation" />
+        <span>Pool automation (+$5k–$10k)</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="mcm-calc__result">
+    <div class="mcm-calc__resultBox">
+      <div class="mcm-calc__resultLabel">Estimated total cost range</div>
+      <div class="mcm-calc__resultValue" id="mcmResult">$--</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mcm-calc { font-family: inherit; border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 18px; max-width: 950px; }
+  .mcm-calc__header h3 { margin: 0 0 6px; font-size: 22px; line-height: 1.2; }
+  .mcm-calc__sub { margin: 0 0 14px; opacity: 0.85; }
+
+  .mcm-calc__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mcm-calc__grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+  .mcm-calc__field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.9; }
+  .mcm-calc__field input, .mcm-calc__field select {
+    width: 100%; padding: 10px 10px; border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 10px; font-size: 14px; background: #fff;
+    font-family: inherit;
+  }
+
+  .mcm-calc__readonly {
+    padding: 10px 10px; border: 1px dashed rgba(0,0,0,0.25);
+    border-radius: 10px; font-size: 14px; background: rgba(0,0,0,0.03);
+    font-family: inherit;
+  }
+
+  .mcm-calc__section { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .mcm-calc__section h4 { margin: 0 0 10px; font-size: 16px; }
+
+  .mcm-calc__checks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mcm-check { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid rgba(0,0,0,0.10); border-radius: 12px; }
+  .mcm-check input { margin-top: 3px; }
+
+  /* UPDATED: Add-on text styling matches Pergola standard */
+  .mcm-check span {
+    font-size: 14px;
+    line-height: 1.25;
+    font-family: inherit;
+  }
+
+  .mcm-calc__result { margin-top: 16px; }
+  .mcm-calc__resultBox { border: 1px solid rgba(0,0,0,0.12); border-radius: 14px; padding: 14px; background: rgba(0,0,0,0.02); }
+  .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+  .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
+
+  @media (max-width: 860px) {
+    .mcm-calc__grid { grid-template-columns: repeat(2, 1fr); }
+    .mcm-calc__checks { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  (function () {
+    const baseData = {
+      vinyl: [
+        { a: 200, c: 18200 }, { a: 240, c: 21840 }, { a: 288, c: 26208 },
+        { a: 300, c: 27300 }, { a: 360, c: 32760 }, { a: 392, c: 35672 },
+        { a: 450, c: 40950 }, { a: 512, c: 46592 }, { a: 648, c: 58968 },
+        { a: 800, c: 72800 }, { a: 1125, c: 102375 }, { a: 1500, c: 136500 }
+      ].sort((x,y)=>x.a-y.a),
+
+      fiberglass: [
+        { a: 200, c: 23400 }, { a: 240, c: 28080 }, { a: 288, c: 33696 },
+        { a: 300, c: 35100 }, { a: 360, c: 42120 }, { a: 392, c: 45864 },
+        { a: 450, c: 52650 }, { a: 512, c: 59904 }, { a: 648, c: 75816 },
+        { a: 800, c: 93600 }, { a: 1125, c: 131625 }, { a: 1500, c: 175500 }
+      ].sort((x,y)=>x.a-y.a),
+
+      concrete: [
+        { a: 200, c: 26000 }, { a: 240, c: 31200 }, { a: 288, c: 37440 },
+        { a: 300, c: 29000 }, { a: 360, c: 46800 }, { a: 392, c: 50960 },
+        { a: 450, c: 58500 }, { a: 512, c: 66560 }, { a: 648, c: 84240 },
+        { a: 800, c: 104000 }, { a: 1125, c: 146250 }, { a: 1500, c: 195000 }
+      ].sort((x,y)=>x.a-y.a),
+    };
+
+    const depthMult = { standard: 1.00, deep: 1.08 };
+
+    const addonRanges = {
+      spa: { min: 15000, max: 25000 },
+      ledge: { min: 8000, max: 15000 },
+      water: { min: 10000, max: 20000 },
+      tile: { min: 5000, max: 12000 },
+      automation: { min: 5000, max: 10000 }
+    };
+
+    const surroundRanges = {
+      basic: { min: 10000, max: 15000 },
+      pavers: { min: 20000, max: 35000 },
+      premium: { min: 35000, max: 50000 }
+    };
+
+    const DISPLAY_FLOOR = 79000;
+    const DISPLAY_CAP_PLUS = 145000;
+
+    const materialAdjust = {
+      vinyl:      { low: 0.92, high: 0.90 },
+      fiberglass: { low: 1.00, high: 1.00 },
+      concrete:   { low: 1.10, high: 1.16 }
+    };
+
+    function fmtMoney(n) {
+      const rounded = Math.round(n);
+      return "$" + rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function interpolateCost(material, area) {
+      const pts = baseData[material];
+      if (!pts || pts.length < 2) return 0;
+
+      if (area <= pts[0].a) return pts[0].c;
+      if (area >= pts[pts.length - 1].a) return pts[pts.length - 1].c;
+
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p1 = pts[i], p2 = pts[i + 1];
+        if (area >= p1.a && area <= p2.a) {
+          const t = (area - p1.a) / (p2.a - p1.a);
+          return p1.c + t * (p2.c - p1.c);
+        }
+      }
+      return pts[pts.length - 1].c;
+    }
+
+    function calc() {
+      const length = Number(document.getElementById("mcmLength").value);
+      const width = Number(document.getElementById("mcmWidth").value);
+
+      const areaEl = document.getElementById("mcmArea");
+      const resultEl = document.getElementById("mcmResult");
+
+      if (!length || !width || length < 10 || width < 8) {
+        areaEl.textContent = "--";
+        resultEl.textContent = "$--";
+        return;
+      }
+
+      const area = length * width;
+      areaEl.textContent = area.toFixed(0) + " sq ft";
+
+      const material = document.getElementById("mcmMaterial").value;
+      const depth = document.getElementById("mcmDepth").value;
+      const surroundKey = document.getElementById("mcmSurround").value;
+
+      let base = interpolateCost(material, area) * (depthMult[depth] || 1);
+
+      const addonChecks = Array.from(document.querySelectorAll("#mcm-pool-calculator .mcmAddon"));
+      let addonsMin = 0, addonsMax = 0;
+      addonChecks.forEach(chk => {
+        if (chk.checked) {
+          const r = addonRanges[chk.value];
+          if (r) { addonsMin += r.min; addonsMax += r.max; }
+        }
+      });
+
+      const s = surroundRanges[surroundKey] || surroundRanges.basic;
+
+      let minTotal = base + addonsMin + s.min;
+      let maxTotal = base + addonsMax + s.max;
+
+      const adj = materialAdjust[material] || materialAdjust.fiberglass;
+      minTotal *= adj.low;
+      maxTotal *= adj.high;
+
+      let displayMin = Math.max(minTotal, DISPLAY_FLOOR);
+      let displayMax = Math.max(maxTotal, displayMin + 5000);
+
+      if (displayMax >= DISPLAY_CAP_PLUS) {
+        resultEl.textContent = fmtMoney(displayMin) + " – " + fmtMoney(DISPLAY_CAP_PLUS) + "+";
+      } else {
+        resultEl.textContent = fmtMoney(displayMin) + " – " + fmtMoney(displayMax);
+      }
+    }
+
+    const root = document.getElementById("mcm-pool-calculator");
+    if (!root) return;
+
+    root.addEventListener("input", calc);
+    root.addEventListener("change", calc);
+    calc();
+  })();
+</script>
