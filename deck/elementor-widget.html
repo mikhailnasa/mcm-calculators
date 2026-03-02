@@ -38,7 +38,7 @@
   </div>
 
   <!-- Row 2 -->
-  <div class="mcm-calc__grid mcm-calc__grid--3" style="margin-top:12px;">
+  <div class="mcm-calc__grid mcm-calc__grid--3 mcm-calc__grid--row2" style="margin-top:12px;">
     <div class="mcm-calc__field">
       <label for="mcmDeckMaterial">Decking material (installed)</label>
       <select id="mcmDeckMaterial">
@@ -140,8 +140,14 @@
   .mcm-calc__resultLabel { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
   .mcm-calc__resultValue { font-size: 28px; font-weight: 700; letter-spacing: 0.2px; }
 
+  /* Existing responsive behavior (tablet-ish): 3 -> 2 columns */
   @media (max-width: 860px) {
     .mcm-calc__grid--3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Mobile-only fix: make Row 2 stack so Material + Complexity are each their own row */
+  @media (max-width: 520px) {
+    .mcm-calc__grid--row2 { grid-template-columns: 1fr; }
   }
 </style>
 
