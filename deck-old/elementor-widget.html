@@ -1,0 +1,130 @@
+<table id="deck-info">
+    <tr>
+        <td width="25%">Length (ft)</td>
+        <td width="25%">Width (ft)</td>
+        <td width="25%">Height (ft)</td>
+        <td width="25%">Railing (ft)</td>
+    </tr>
+    <tr>
+        <td><input type="text" id="deck_length" name="deck_length" /></td>
+        <td><input type="text" id="deck_width" name="deck_width" /></td>
+        <td><input type="text" id="deck_height" name="deck_height" /></td>
+        <td><input type="text" id="deck_railing" name="deck_railing" /></td>
+    </tr>
+</table>
+
+<div style="margin-top: 30px;">
+    <input style="height: 20px; width: 20px; margin-top: 3px; display: inline-block;" type="checkbox" id="want_roof" name="want_roof" />
+    <label style="margin-top: -10px; padding-left: 10px; display: inline-block;" for="want_roof">I also want a roof with my deck</label>
+</div>
+<h3 id="roof-heading" style="margin-top: 30px; display: none;">Roof Information</h3>
+<table id="roof-info" style="display: none;">
+    <tr>
+        <td width="25%">Length (ft)</td>
+        <td width="25%">Width (ft)</td>
+        <td width="30%">Lights & Fan</td>
+    </tr>
+    <tr>
+        <td><input type="text" id="roof_length" name="roof_length" /></td>
+        <td><input type="text" id="roof_width" name="roof_width" /></td>
+        <td>
+            <div style="margin-top: 7px;">
+                <input style="height: 20px; width: 20px; margin-top: 3px; display: inline-block;" type="checkbox" id="want_lights" name="want_roof" />
+                <label style="margin-top: -10px; padding-left: 10px; display: inline-block;" for="want_lights">Yes</label>
+            </div>
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+</table>
+
+<table id="display-quote">
+    <tr>
+        <td style="text-align: center; vertical-align: middle; width: 50%; font-weight: bold;">Wood Deck</td>
+        <td style="text-align: center; vertical-align: middle; width: 50%; font-weight: bold;">Composite Deck</td>
+    </tr>
+    <tr>
+        <td style="text-align: center; vertical-align: middle;"><span id="wood-quote">—</span></td>
+        <td style="text-align: center; vertical-align: middle;"><span id="composite-quote">—</span></td>
+    </tr>
+</table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const roofCheckbox = document.getElementById("want_roof");
+        const roofInfo = document.getElementById("roof-info");
+        const roofHeading = document.getElementById("roof-heading");
+        const inputFields = document.querySelectorAll("#deck-info input, #roof-info input");
+
+        // Show/hide roof options and heading
+        roofCheckbox.addEventListener("change", function () {
+            const displayStyle = this.checked ? "block" : "none";
+            roofInfo.style.display = displayStyle;
+            roofHeading.style.display = displayStyle;
+            calculateDeck(); // Recalculate when toggling roof
+        });
+
+        // Function to format numbers with commas and no decimals
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString();
+        }
+
+        // Function to calculate deck cost range
+        function calculateDeck() {
+            const length = parseFloat(document.getElementById("deck_length").value) || 0;
+            const width = parseFloat(document.getElementById("deck_width").value) || 0;
+            const height = parseFloat(document.getElementById("deck_height").value) || 0;
+            const railing = parseFloat(document.getElementById("deck_railing").value) || 0;
+
+            const area = length * width; // Deck area in sq ft
+            const stairs = Math.floor((height * 12) / 7); // Number of stairs rounded down
+
+            // Wood pricing
+            const woodDeckCostLow = area * 45;
+            const woodDeckCostHigh = area * 65;
+            const woodStairCostLow = stairs * 355;
+            const woodStairCostHigh = stairs * 387;
+            const woodRailingCostLow = railing * 92;
+            const woodRailingCostHigh = railing * 101;
+
+            let woodTotalLow = woodDeckCostLow + woodStairCostLow + woodRailingCostLow;
+            let woodTotalHigh = woodDeckCostHigh + woodStairCostHigh + woodRailingCostHigh;
+
+            // Composite pricing
+            const compositeDeckCostLow = area * 50;
+            const compositeDeckCostHigh = area * 75;
+            const compositeStairCostLow = stairs * 366;
+            const compositeStairCostHigh = stairs * 399;
+            const compositeRailingCostLow = railing * 146;
+            const compositeRailingCostHigh = railing * 199;
+
+            let compositeTotalLow = compositeDeckCostLow + compositeStairCostLow + compositeRailingCostLow;
+            let compositeTotalHigh = compositeDeckCostHigh + compositeStairCostHigh + compositeRailingCostHigh;
+
+            if (roofCheckbox.checked) {
+                const roofLength = parseFloat(document.getElementById("roof_length").value) || 0;
+                const roofWidth = parseFloat(document.getElementById("roof_width").value) || 0;
+                const wantLights = document.getElementById("want_lights").checked;
+
+                const roofArea = roofLength * roofWidth;
+                const roofCostLow = roofArea * 95; // Low-end roof cost per sq ft
+                const roofCostHigh = roofArea * 120; // High-end roof cost per sq ft
+                const lightsCostLow = wantLights ? 1900 : 0; // Low-end electrical cost
+                const lightsCostHigh = wantLights ? 2150 : 0; // High-end electrical cost
+
+                woodTotalLow += roofCostLow + lightsCostLow;
+                woodTotalHigh += roofCostHigh + lightsCostHigh;
+                compositeTotalLow += roofCostLow + lightsCostLow;
+                compositeTotalHigh += roofCostHigh + lightsCostHigh;
+            }
+
+            // Display results with commas and no decimals
+            document.getElementById("wood-quote").textContent = `$${formatNumber(woodTotalLow)} - $${formatNumber(woodTotalHigh)}`;
+            document.getElementById("composite-quote").textContent = `$${formatNumber(compositeTotalLow)} - $${formatNumber(compositeTotalHigh)}`;
+        }
+
+        // Attach event listener to all input fields to trigger calculation on input
+        inputFields.forEach((input) => {
+            input.addEventListener("input", calculateDeck);
+        });
+    });
+</script>
